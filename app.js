@@ -1,37 +1,17 @@
-// node server setup
-//
-// Express makes it easier to write node server codes.
-// you first need to install express by => npm insall express --save or -s
-// from there you can then move
-
-// update a todo based on an id using put
-
 const express = require("express");
 
 const port = 5000;
-
 let todos = [{ id: 1, task: "call mom", date: "20/08/2020", completed: false }];
 
 const app = express();
 app.use(express.json());
 
 app.get("/", (req, res) => {
-  res.status(201).json(todos);
+  res.status(200).json(todos);
 });
 
 app.get("/:id", (req, res) => {
   id = req.params.id;
-
-  //   for todo in todos:
-  //     if todo.get("id") == id:
-  //         print(todo)
-
-  //   todos.forEach((it, ind) => {
-  //     if (it.id === id) {
-  //       console.log();
-  //       res.send(it);
-  //     }
-  //   });
 
   todos.forEach((todo) => {
     if (todo.id == id) {
@@ -68,31 +48,34 @@ app.post("/", (req, res) => {
 app.put("/:id", (req, res) => {
   const todoID = req.params.id;
   const update = req.body;
+  const newTodos = [];
+  let todoFound = false;
 
   todos.forEach((todo) => {
     if (todo.id == todoID) {
-      // todo = update;
+      todoFound = true;
       if (update.completed != undefined) {
         todo.completed = update.completed;
       }
-
       if (update.task != undefined) {
         todo.task = update.task;
       }
-
       if (update.date != undefined) {
         todo.date = update.date;
       }
     }
-
     newTodos.push(todo);
   });
 
+  if (!todoFound) {
+    res.status(400).send();
+  }
+
   todos = newTodos;
 
-  // res.send("PUT request");
+  res.status(204).send();
 });
 
 app.listen(port, () => {
-  console.log("Server is running......");
+  console.log("server is running....");
 });
